@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import createApiInstance from "../../utils/createApiInstance";
+// import Router from "next/router";
 
 const FormComponent = () => {
   const [isClient, setIsClient] = useState(false);
@@ -27,9 +29,12 @@ const FormComponent = () => {
     password: Yup.string().required("Password is required").min(8),
   });
 
-  const handleSubmit = values => {
-    console.log(values);
-    // You can perform any additional actions here, such as submitting the form data to an API
+  const handleSubmit = async values => {
+    const api = await createApiInstance();
+    const response = await api.post("/auth/register", values);
+    if (response.status === 201) {
+      console.log("User registered successfully", response.data);
+    }
   };
 
   return (
